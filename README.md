@@ -4,7 +4,7 @@ Plataforma web de **examen interactivo** para materias universitarias (modo Prá
 
 > 📐 **Arquitectura:** cada materia vive en su **propia subcarpeta** dentro de `materias/`. Cada examen es un **archivo `.js` auto-contenido**: integra los metadatos de la materia (el antiguo `meta.js`) y las preguntas, y se autoregistra en `SUBJECTS`. En `index.html` hay **un `<script>` estático por examen** (sección sincrónica, por lo que abre sin problemas con `file://`, sin servidor ni comandos extra). Para añadir un examen: **crear el `.js` y agregar su `<script>` a `index.html`** — punto. No modificás `data.js` ni `logic.js`, ni corrés comandos.
 >
-> 📦 Estado actual: el proyecto incluye las materias **`ia`**, **`redes`** y **`asi`** (Administración de Sistemas de Información). Podés agregar tantas como necesites siguiendo la plantilla de abajo.
+> 📦 Estado actual: el proyecto incluye las materias **`ia`**, **`redes`** y **`asi`** (Administración de Sistemas de Información). La página (`index.html`) carga actualmente **solo `asi`**; `ia` y `redes` están disponibles en `materias/` y se pueden volver a habilitar agregando sus `<script>`. Podés agregar tantas como necesites siguiendo la plantilla de abajo.
 
 ## Estructura del proyecto
 
@@ -42,11 +42,6 @@ examen/
 <!-- 1) estado: SUBJECTS vacío -->
 <script src="data.js"></script>
 <!-- 2) exámenes (uno por archivo; el 1er examen de cada materia define la materia) -->
-<script src="materias/ia/parcial1.js"></script>
-<script src="materias/ia/parcial2.js"></script>
-<script src="materias/redes/general.js"></script>
-<script src="materias/redes/parcial2.js"></script>
-<script src="materias/redes/parcial3.js"></script>
 <!-- ASI — grupo1 define la materia; general reúne grupo1/2/3 → va al final -->
 <script src="materias/administracion/grupo1.js"></script>
 <script src="materias/administracion/grupo2.js"></script>
@@ -55,6 +50,11 @@ examen/
 <!-- 3) UI -->
 <script src="logic.js"></script>
 ```
+
+> ℹ️ La página carga actualmente **solo** la materia `asi` (Administración). Los archivos
+> de `ia` y `redes` siguen presentes en `materias/`; si los querés de nuevo, agregá sus
+> `<script>` en este bloque (respetando el orden de dependencias de cada materia) y
+> volvé a `data.js` ajustando `currentSubject`.
 
 > ⚠️ Si un examen reúne preguntas de otros de la misma materia (como `asi/general`), los
 > archivos que proveen las preguntas deben cargarse **antes** que él. El orden alfabético
