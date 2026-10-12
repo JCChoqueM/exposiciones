@@ -854,3 +854,66 @@ body[data-exam] .stats-bar {
   border-bottom-color: color-mix(in srgb, var(--gc) 55%, var(--border));
 }
 
+
+/* ─── EFECTO DE GRUPO ACTIVO (dentro de "Todo en uno") ───
+   Al elegir una sección, los chips de otros grupos se atenúan y la pestaña del
+   grupo dueño de esa sección se ilumina con su color. */
+.seccion-chip.dim {
+  opacity: 0.35;
+  filter: saturate(0.6);
+}
+.seccion-chip.dim:hover {
+  opacity: 0.8;
+}
+.exam-btn.group-ref:not(.active) {
+  color: var(--gc, var(--accent2));
+  background: color-mix(in srgb, var(--gc, var(--accent)) 14%, var(--bg2));
+  border-color: var(--gc, var(--accent));
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--gc, var(--accent)) 55%, transparent),
+    0 4px 16px color-mix(in srgb, var(--gc, var(--accent)) 35%, transparent);
+}
+.exam-btn.group-ref:not(.active)::before {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--gc, var(--accent)) 35%, transparent);
+  animation: grupo-pulso 1.4s ease-in-out infinite;
+}
+@keyframes grupo-pulso {
+  50% { box-shadow: 0 0 0 7px transparent; }
+}
+
+/* ─── CHIPS DENTRO / FUERA DEL EXAMEN ACTIVO ───
+   Se ven todas las secciones con el color de su grupo. En un examen de un solo
+   grupo, las del grupo van resaltadas (borde sólido) y las demás atenuadas. */
+.seccion-chip.dentro:not(.active) {
+  border-style: solid;
+  border-color: var(--gc, #a78bfa);
+  background: color-mix(in srgb, var(--gc, #a78bfa) 14%, transparent);
+  color: var(--gc, #c4b5fd);
+  font-weight: 600;
+}
+.seccion-chip.fuera {
+  opacity: 0.28;
+  filter: grayscale(0.5);
+  cursor: not-allowed;
+}
+.seccion-chip.fuera:hover {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--gc, #a78bfa) 45%, transparent);
+  color: color-mix(in srgb, var(--gc, #a78bfa) 70%, var(--text-muted));
+}
+
+/* ─── MODO ACTUAL EN LA BARRA DE ESTADÍSTICAS ─── */
+.stat-mode {
+  min-width: 110px;
+}
+.stat-mode .stat-num {
+  font-size: 15px;
+  padding: 3px 0;
+}
+.stat-mode[data-mode='practice'] { border-color: var(--accent); }
+.stat-mode[data-mode='practice'] .stat-num { color: var(--accent2); }
+.stat-mode[data-mode='exam'] { border-color: var(--warn); }
+.stat-mode[data-mode='exam'] .stat-num { color: var(--warn); }
+.stat-mode[data-mode='review'] { border-color: #a78bfa; }
+.stat-mode[data-mode='review'] .stat-num { color: #a78bfa; }

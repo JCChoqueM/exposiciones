@@ -13,6 +13,7 @@
 
       function buildMateriaBar() {
         const wrap = document.getElementById('materia-bar');
+        if (!wrap) return; // la barra de materias se quitó de index.html
         wrap.innerHTML = Object.values(SUBJECTS)
           .map(
             (s) =>
@@ -152,11 +153,7 @@
 
       function buildSeccionFilter() {
         const wrap = document.getElementById('seccion-filter');
-        let secciones = SUBJECTS[currentSubject].secciones;
-        if (secciones && currentExam) {
-          const presentes = new Set(getSubjectQuestions().map((q) => q.seccion));
-          secciones = secciones.filter((s) => s === 'TODAS' || presentes.has(s));
-        }
+        const secciones = SUBJECTS[currentSubject].secciones;
         if (!secciones) {
           wrap.innerHTML = '';
           wrap.style.display = 'none';
@@ -164,26 +161,37 @@
         }
         wrap.style.display = 'flex';
 
-        // Color por chip: si el examen activo junta preguntas de otros exámenes
-        // (ej. "Todo en uno"), cada sección toma el color del examen de origen.
         const exams = Object.values(SUBJECTS[currentSubject].exams || {});
-        const qsActivo = getSubjectQuestions();
-        const examDe = (sec) => {
-          const q = qsActivo.find((x) => x.seccion === sec);
-          // dueño = primer examen registrado que contiene esa pregunta
-          const dueno = q && exams.find((e) => e.questions.includes(q));
-          return dueno && dueno.key !== currentExam ? dueno.key : null; // null = hereda el color del examen activo
+
+        // Siempre se muestran TODAS las secciones, cada una con el color del examen/grupo
+        // al que pertenece (primer examen registrado que tiene preguntas de esa sección).
+        const dueñoDe = (sec) => {
+          const e = exams.find((ex) => ex.questions.some((q) => q.seccion === sec));
+          return e ? e.key : null;
         };
 
-        // Grupo "activo": el del chip de sección elegido (solo cuando hay varios orígenes)
-        const grupoActivo = activeSeccion === 'TODAS' ? null : examDe(activeSeccion);
+        // Secciones que SÍ tiene el examen activo (las otras se muestran atenuadas)
+        const presentes = new Set(getSubjectQuestions().map((q) => q.seccion));
+        const hayFuera = !!currentExam && secciones.some((s) => s !== 'TODAS' && !presentes.has(s));
+
+        // Grupo "activo": el de la sección elegida (efecto sobre pestañas y otros chips)
+        const grupoActivo = activeSeccion === 'TODAS' ? null : dueñoDe(activeSeccion);
 
         wrap.innerHTML = secciones
           .map((s) => {
-            const origen = s === 'TODAS' ? null : examDe(s);
+            const origen = s === 'TODAS' ? null : dueñoDe(s);
             const attr = origen ? ` data-exam="${origen}"` : '';
-            const apagado = grupoActivo && s !== 'TODAS' && origen !== grupoActivo ? ' dim' : '';
-            return `<button class="seccion-chip ${s === activeSeccion ? 'active' : ''}${apagado}"${attr} onclick="filterSeccion('${s.replace(/'/g, "\\'")}')">${s}</button>`;
+            const fuera = hayFuera && s !== 'TODAS' && !presentes.has(s);
+            const dentro = hayFuera && s !== 'TODAS' && presentes.has(s);
+            let cls = 'seccion-chip';
+            if (s === activeSeccion) cls += ' active';
+            if (fuera) cls += ' fuera';
+            else if (dentro) cls += ' dentro';
+            else if (grupoActivo && s !== 'TODAS' && origen !== grupoActivo) cls += ' dim';
+            const extra = fuera
+              ? ' disabled title="No pertenece a este examen"'
+              : ` onclick="filterSeccion('${s.replace(/'/g, "\\'")}')"`;
+            return `<button class="${cls}"${attr}${extra}>${s}</button>`;
           })
           .join('');
 
@@ -327,6 +335,9 @@
       }
 
       function updateStats(qs) {
+        const modos = { practice: '🎯 Práctica', exam: '📝 Examen', review: '👁 Repaso' };
+        document.getElementById('stat-mode').textContent = modos[mode] || modos.practice;
+        document.getElementById('stat-mode-card').dataset.mode = mode;
         const answered = qs.filter((q) => userAnswers[q.id] !== undefined).length;
         const correct = qs.filter((q) => userAnswers[q.id] === q.answer).length;
         const wrong = answered - correct;
