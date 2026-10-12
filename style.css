@@ -853,3 +853,4 @@
 body[data-exam] .stats-bar {
   border-bottom-color: color-mix(in srgb, var(--gc) 55%, var(--border));
 }
+
