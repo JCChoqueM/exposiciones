@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Examenes UNIOR</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="style.css"
+    />
+  </head>
+  <body>
+    <header>
+      <button
+        class="theme-toggle"
+        onclick="toggleTheme()"
+        id="theme-btn"
+      >
+        ☀️ Claro
+      </button>
+      <div
+        class="badge"
+        id="page-badge"
+      >
+        ASI · INGENIERÍA DE SISTEMAS
+      </div>
+      <h1 id="page-title">Administración de Sistemas de Información</h1>
+      <p
+        class="subtitle"
+        id="page-subtitle"
+      >
+        Examen Interactivo — Administración de Sistemas de Información (UNIOR)
+      </p>
+    </header>
+
+    <div class="materia-hint">Selecciona una materia</div>
+    <div
+      class="materia-bar"
+      id="materia-bar"
+    ></div>
+
+    <div class="exam-hint">Selecciona un examen</div>
+    <div
+      class="exam-bar"
+      id="exam-bar"
+    ></div>
+
+    <div class="mode-bar">
+      <button
+        class="mode-btn active"
+        onclick="setMode('practice')"
+      >
+        🎯 Práctica
+      </button>
+      <button
+        class="mode-btn"
+        onclick="setMode('exam')"
+      >
+        📝 Examen
+      </button>
+      <button
+        class="mode-btn"
+        onclick="setMode('review')"
+      >
+        👁 Repaso
+      </button>
+    </div>
+
+    <div
+      class="tema-filter"
+      id="tema-filter"
+    ></div>
+
+    <div
+      class="seccion-filter"
+      id="seccion-filter"
+    ></div>
+
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div
+          class="stat-num"
+          id="stat-total"
+        >
+          0
+        </div>
+        <div class="stat-lbl">Preguntas</div>
+      </div>
+      <div class="stat-card">
+        <div
+          class="stat-num"
+          id="stat-answered"
+        >
+          0
+        </div>
+        <div class="stat-lbl">Respondidas</div>
+      </div>
+      <div class="stat-card">
+        <div
+          class="stat-num"
+          id="stat-correct"
+          style="color: var(--correct)"
+        >
+          0
+        </div>
+        <div class="stat-lbl">Correctas</div>
+      </div>
+      <div class="stat-card">
+        <div
+          class="stat-num"
+          id="stat-wrong"
+          style="color: var(--wrong)"
+        >
+          0
+        </div>
+        <div class="stat-lbl">Incorrectas</div>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div
+          class="progress-fill"
+          id="progress-fill"
+          style="width: 0%"
+        ></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button
+        class="btn btn-primary"
+        onclick="submitExam()"
+        id="btn-submit"
+        style="display: none"
+      >
+        Ver Resultados
+      </button>
+      <button
+        class="btn btn-ghost"
+        onclick="shuffleQuestions()"
+      >
+        🔀 Aleatorio
+      </button>
+      <button
+        class="btn btn-ghost"
+        onclick="resetAll()"
+      >
+        ↺ Reiniciar
+      </button>
+    </div>
+
+    <div id="result-panel">
+      <div
+        class="result-score"
+        id="r-score"
+      >
+        —
+      </div>
+      <div
+        class="result-grade"
+        id="r-grade"
+      ></div>
+      <div class="result-bar-wrap">
+        <div
+          class="result-bar-fill"
+          id="r-bar"
+          style="width: 0%"
+        ></div>
+      </div>
+      <div class="result-breakdown">
+        <div class="rb-item">
+          <div
+            class="rb-num c"
+            id="r-correct"
+          >
+            0
+          </div>
+          <div class="rb-lbl">Correctas</div>
+        </div>
+        <div class="rb-item">
+          <div
+            class="rb-num w"
+            id="r-wrong"
+          >
+            0
+          </div>
+          <div class="rb-lbl">Incorrectas</div>
+        </div>
+        <div class="rb-item">
+          <div
+            class="rb-num s"
+            id="r-skipped"
+          >
+            0
+          </div>
+          <div class="rb-lbl">Sin responder</div>
+        </div>
+      </div>
+      <button
+        class="btn btn-primary"
+        onclick="resetAll()"
+      >
+        Volver a Intentar
+      </button>
+    </div>
+
+    <div
+      class="questions-wrap"
+      id="questions-wrap"
+    ></div>
+
+    <!-- Botón flotante ir arriba -->
+    <button
+      id="btn-top"
+      title="Ir al inicio"
+    >
+      ↑ Inicio
+    </button>
+
+    <!-- data.js (raíz) inicializa SUBJECTS={} y el estado global.
+         Luego van los archivos de examen auto-contenidos (uno <script> por
+         examen); cada uno define su materia con el registro idempotente
+         `if (!SUBJECTS.<key>)`. Por último logic.js (init sincrónico).
+         Orden: data.js primero; un <script> por examen agrupado por materia;
+         logic.js al final. IMPORTANTE: si un examen reutiliza las preguntas de
+         otros de la misma materia (p. ej. 'general' junta 'grupo1/2/3'), esos
+         archivos deben cargarse ANTES que él. Para añadir un examen: crear el
+         .js y agregar su <script> aquí respetando las dependencias. -->
+    <script src="data.js"></script>
+    <!-- ASI — Administración de Sistemas de Información.
+         grupo1.js define la materia (registro idempotente); general.js reutiliza
+         las preguntas de grupo1/2/3, por lo que DEBE cargarse DESPUÉS de ellos. -->
+    <script src="materias/administracion/grupo1.js"></script>
+    <script src="materias/administracion/grupo2.js"></script>
+    <script src="materias/administracion/grupo3.js"></script>
+    <script src="materias/administracion/general.js"></script>
+    <script src="logic.js"></script>
+  </body>
+</html>
