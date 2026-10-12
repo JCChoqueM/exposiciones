@@ -780,3 +780,76 @@
           flex-wrap: wrap;
         }
       }
+
+
+/* ─── COLORES POR EXAMEN / GRUPO ───
+   El atributo data-exam está en cada pestaña (.exam-btn) y en <body> (examen activo).
+   Los chips de sección heredan el color desde <body>. Para un examen nuevo basta
+   agregar una línea con su exam_key. Sin definir, se usa el color de acento. */
+[data-exam='grupo1']  { --gc: #3b82f6; }                       /* azul    */
+[data-exam='grupo2']  { --gc: #f59e0b; --gc-ink: #231500; }    /* ámbar   */
+[data-exam='grupo3']  { --gc: #48ec87; }                       /* rosa    */
+[data-exam='general'] { --gc: #8b5cf6; }                       /* violeta */
+
+/* Pestañas de examen: cada una con su color; la activa va rellena, elevada y con ✓ */
+.exam-btn {
+  border-color: color-mix(in srgb, var(--gc, var(--accent)) 40%, var(--border));
+  border-top: 3px solid var(--gc, var(--accent));
+}
+.exam-btn::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: var(--gc, var(--accent));
+}
+.exam-btn:hover {
+  border-color: var(--gc, var(--accent2));
+  color: var(--gc, var(--accent2));
+}
+.exam-btn.active {
+  background: var(--gc, var(--accent));
+  border-color: var(--gc, var(--accent));
+  color: var(--gc-ink, #fff);
+  transform: translateY(-2px);
+  box-shadow:
+    0 6px 22px color-mix(in srgb, var(--gc, var(--accent)) 45%, transparent),
+    0 0 0 3px color-mix(in srgb, var(--gc, var(--accent)) 25%, transparent);
+}
+.exam-btn.active::before {
+  content: '✓';
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+  font-weight: 800;
+}
+
+/* Chips de sección: toman el color del examen activo */
+.seccion-chip {
+  border-color: color-mix(in srgb, var(--gc, #a78bfa) 45%, transparent);
+  color: color-mix(in srgb, var(--gc, #a78bfa) 70%, var(--text-muted));
+}
+.seccion-chip:hover {
+  border-color: var(--gc, #a78bfa);
+  color: var(--gc, #c4b5fd);
+  background: color-mix(in srgb, var(--gc, #a78bfa) 10%, transparent);
+}
+.seccion-chip.active {
+  background: var(--gc, #a78bfa);
+  border-color: var(--gc, #a78bfa);
+  border-style: solid;
+  color: var(--gc-ink, #fff);
+  font-weight: 700;
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--gc, #a78bfa) 40%, transparent);
+}
+.seccion-chip.active::before {
+  content: '✓ ';
+}
+
+/* La barra fija de estadísticas también toma el color del examen */
+body[data-exam] .stats-bar {
+  border-bottom-color: color-mix(in srgb, var(--gc) 55%, var(--border));
+}

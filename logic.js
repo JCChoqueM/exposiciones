@@ -1,4 +1,4 @@
-      // ── Helpers de datos (capa materia → examen → preguntas) ──
+// ── Helpers de datos (capa materia → examen → preguntas) ──
       function activeExam() {
         const subject = SUBJECTS[currentSubject];
         return subject && subject.exams && currentExam
@@ -36,7 +36,7 @@
         wrap.innerHTML = exams
           .map(
             (e) =>
-              `<button class="exam-btn ${e.key === currentExam ? 'active' : ''}" onclick="selectExam('${e.key}')">
+              `<button class="exam-btn ${e.key === currentExam ? 'active' : ''}" data-exam="${e.key}" onclick="selectExam('${e.key}')">
                 ${e.label || e.key}
               </button>`,
           )
@@ -47,6 +47,7 @@
         if (!SUBJECTS[key]) return;
         currentSubject = key;
         currentExam = null;          // sin examen activo: se pide elegir uno
+        document.body.removeAttribute('data-exam');
         activeTema = 'TODOS';
         activeSeccion = 'TODAS';
         userAnswers = {};
@@ -78,6 +79,7 @@
         const subject = SUBJECTS[currentSubject];
         if (!subject || !subject.exams[key]) return;
         currentExam = key;
+        document.body.setAttribute('data-exam', key);
         const exam = subject.exams[key];
         activeTema = 'TODOS';
         activeSeccion = 'TODAS';
@@ -150,19 +152,45 @@
 
       function buildSeccionFilter() {
         const wrap = document.getElementById('seccion-filter');
-        const secciones = SUBJECTS[currentSubject].secciones;
+        let secciones = SUBJECTS[currentSubject].secciones;
+        if (secciones && currentExam) {
+          const presentes = new Set(getSubjectQuestions().map((q) => q.seccion));
+          secciones = secciones.filter((s) => s === 'TODAS' || presentes.has(s));
+        }
         if (!secciones) {
           wrap.innerHTML = '';
           wrap.style.display = 'none';
           return;
         }
         wrap.style.display = 'flex';
+
+        // Color por chip: si el examen activo junta preguntas de otros exámenes
+        // (ej. "Todo en uno"), cada sección toma el color del examen de origen.
+        const exams = Object.values(SUBJECTS[currentSubject].exams || {});
+        const qsActivo = getSubjectQuestions();
+        const examDe = (sec) => {
+          const q = qsActivo.find((x) => x.seccion === sec);
+          // dueño = primer examen registrado que contiene esa pregunta
+          const dueno = q && exams.find((e) => e.questions.includes(q));
+          return dueno && dueno.key !== currentExam ? dueno.key : null; // null = hereda el color del examen activo
+        };
+
+        // Grupo "activo": el del chip de sección elegido (solo cuando hay varios orígenes)
+        const grupoActivo = activeSeccion === 'TODAS' ? null : examDe(activeSeccion);
+
         wrap.innerHTML = secciones
-          .map(
-            (s) =>
-              `<button class="seccion-chip ${s === activeSeccion ? 'active' : ''}" onclick="filterSeccion('${s.replace(/'/g, "\\'")}')">${s}</button>`,
-          )
+          .map((s) => {
+            const origen = s === 'TODAS' ? null : examDe(s);
+            const attr = origen ? ` data-exam="${origen}"` : '';
+            const apagado = grupoActivo && s !== 'TODAS' && origen !== grupoActivo ? ' dim' : '';
+            return `<button class="seccion-chip ${s === activeSeccion ? 'active' : ''}${apagado}"${attr} onclick="filterSeccion('${s.replace(/'/g, "\\'")}')">${s}</button>`;
+          })
           .join('');
+
+        // Efecto en la pestaña del grupo al que pertenece la sección elegida
+        document.querySelectorAll('.exam-btn').forEach((b) => {
+          b.classList.toggle('group-ref', !!grupoActivo && b.dataset.exam === grupoActivo);
+        });
       }
 
       function filterSeccion(s) {
