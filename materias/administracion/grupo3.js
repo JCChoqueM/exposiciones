@@ -13,7 +13,7 @@
     label: 'Administración de Sistemas de Información',
     badge: 'ASI · INGENIERÍA DE SISTEMAS',
     subtitle: 'Examen Interactivo — Administración de Sistemas de la Información (UNIOR)',
-    temas: ['TODOS', 'GRUPO 1', 'GRUPO 2', 'GRUPO 3'],
+    temas: null, // sin filtro por tema: los grupos ya son pestañas de examen
     temaLabels: {
       'GRUPO 1': 'GRUPO 1: CRM, SCM y KM',
       'GRUPO 2': 'GRUPO 2: Estrategia, Decisiones, Calidad y Ética',
@@ -62,24 +62,12 @@
       'Para conectar los teléfonos de los empleados',
       'Para reemplazar a las computadoras personales',
     ], 0),
-    q(3, 'Infraestructura', '¿Cuál de estas NO es una tecnología de almacenamiento?', [
-      'SSD',
-      'NAS',
-      'Wi-Fi',
-      'HDD',
-    ], 2),
     q(4, 'Infraestructura', '¿Qué permite la computación en la nube?', [
       'Trabajar sin necesidad de energía eléctrica',
       'Eliminar la necesidad de seguridad',
       'Reemplazar el software por hardware',
       'Utilizar recursos tecnológicos mediante Internet sin que todos los equipos estén dentro de la empresa',
     ], 3),
-    q(5, 'Infraestructura', '¿Qué puede provocar una infraestructura deficiente?', [
-      'Mayor velocidad en todos los sistemas',
-      'Menos costos de mantenimiento',
-      'Pérdida de información e interrupción de servicios',
-      'Mayor seguridad de los datos',
-    ], 2),
 
     // ── Software ──
     q(6, 'Software', '¿Cuáles son ejemplos de sistemas operativos?', [
@@ -152,12 +140,6 @@
       'Instalarlas únicamente en el servidor',
       'Configurarlas correctamente para evitar accesos no autorizados',
     ], 3),
-    q(17, 'Redes', '¿Para qué puede usar Internet una empresa?', [
-      'Solo para enviar correos',
-      'Solo para almacenar archivos locales',
-      'Comercio electrónico, comunicación, publicidad, servicios en la nube, videoconferencias y acceso remoto',
-      'Únicamente para actualizar el hardware',
-    ], 2),
     q(18, 'Redes', 'Según el trabajo, ¿por qué las redes son fundamentales para la integración empresarial?', [
       'Porque reducen la cantidad de computadoras',
       'Porque permiten que, por ejemplo, ventas registre una operación y la información llegue automáticamente a inventario y contabilidad',

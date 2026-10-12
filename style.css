@@ -1,4 +1,4 @@
-      :root {
+:root {
         --bg: #0a0e1a;
         --bg2: #111827;
         --bg3: #1a2236;
@@ -355,17 +355,24 @@
       .stats-bar {
         display: flex;
         gap: 14px;
-        padding: 0 24px 24px;
+        padding: 8px 24px;
+        margin-bottom: 8px;
         justify-content: center;
         flex-wrap: wrap;
+        /* se mantiene visible al hacer scroll */
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
       }
       .stat-card {
         background: var(--bg2);
         border: 1px solid var(--border);
         border-radius: 10px;
-        padding: 10px 20px;
+        padding: 6px 16px;
         text-align: center;
-        min-width: 90px;
+        min-width: 80px;
       }
       .stat-num {
         font-family: 'Syne', sans-serif;

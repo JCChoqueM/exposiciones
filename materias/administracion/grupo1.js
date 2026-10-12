@@ -13,7 +13,7 @@
     label: 'Administración de Sistemas de Información',
     badge: 'ASI · INGENIERÍA DE SISTEMAS',
     subtitle: 'Examen Interactivo — Administración de Sistemas de la Información (UNIOR)',
-    temas: ['TODOS', 'GRUPO 1', 'GRUPO 2', 'GRUPO 3'],
+    temas: null, // sin filtro por tema: los grupos ya son pestañas de examen
     temaLabels: {
       'GRUPO 1': 'GRUPO 1: CRM, SCM y KM',
       'GRUPO 2': 'GRUPO 2: Estrategia, Decisiones, Calidad y Ética',
@@ -50,12 +50,6 @@
 
   const ASI_GRUPO1_QUESTIONS = [
     // ── CRM ──
-    q(1, 'CRM', '¿Qué significa CRM?', [
-      'Customer Resource Management',
-      'Customer Relationship Management (Gestión de la Relación con el Cliente)',
-      'Company Revenue Management',
-      'Central Records Module',
-    ], 1),
     q(2, 'CRM', 'Según IBM, ¿qué es un CRM?', [
       'Un conjunto de tecnologías integradas para documentar, seguir y gestionar las relaciones e interacciones con clientes actuales y potenciales',
       'Un programa que solo sirve para enviar correos masivos',
@@ -80,18 +74,6 @@
       'La lista de proveedores aprobados',
       'El conjunto de guías internas de la empresa',
     ], 0),
-    q(6, 'CRM', 'En el caso de María y la tienda «Hogar Feliz», ¿qué hace Carlos cuando ella dice que lo va a pensar?', [
-      'Cierra la ficha porque la venta se perdió',
-      'Programa un recordatorio en la ficha para dentro de 2 días, para no presionarla ni olvidarse',
-      'Le llama todos los días hasta que compre',
-      'Le envía un descuento del 10 % de inmediato',
-    ], 1),
-    q(7, 'CRM', 'En la posventa, soporte resuelve el problema de María sin pedirle los datos otra vez. ¿Qué lo hace posible?', [
-      'Que María tiene excelente memoria',
-      'Que soporte llama al proveedor del sofá',
-      'Que toda su compra e historial están en una sola ficha compartida',
-      'Que el sofá tiene garantía de por vida',
-    ], 2),
     q(8, 'CRM', '¿Qué significa «segmentar» clientes?', [
       'Eliminar a los clientes inactivos',
       'Cobrarles precios distintos',
@@ -128,12 +110,6 @@
       'Programar recordatorios de seguimiento',
       'Conectarlo con el correo y la página web',
     ], 0),
-    q(14, 'CRM', '¿Cuál de estos programas NO es un CRM?', [
-      'HubSpot',
-      'Pipedrive',
-      'Zoho CRM',
-      'Kinaxis',
-    ], 3),
 
     // ── SCM ──
     q(15, 'SCM', 'Según el CSCMP, ¿qué es la gestión de la cadena de suministro (SCM)?', [
@@ -184,24 +160,12 @@
       'El tiempo de entrega al cliente',
       'Qué tan rápido se vende lo que hay en bodega',
     ], 3),
-    q(23, 'SCM', 'En «Zapatos Sol», cuando quedan 20 pares de talla 40 el programa avisa «Queda poco». ¿A qué etapa corresponde?', [
-      'Planificar',
-      'Almacenar',
-      'Distribuir',
-      'Logística inversa',
-    ], 1),
     q(24, 'SCM', '¿Cuál es un error común en el SCM?', [
       'Compartir información con los proveedores',
       'Tener un plan por si algo falla',
       'Depender de un solo proveedor',
       'Revisar los datos todos los días',
     ], 2),
-    q(25, 'SCM', '¿Qué idea central resume el SCM en la infografía?', [
-      'Una cadena es tan fuerte como su parte más débil',
-      'El cliente siempre va primero',
-      'Lo que no se escribe se pierde',
-      'Lo barato siempre sale caro',
-    ], 0),
 
     // ── Gestión del Conocimiento ──
     q(26, 'Gestión del Conocimiento', 'Dicho de forma simple, ¿en qué consiste la gestión del conocimiento (KM)?', [
@@ -234,36 +198,12 @@
       'El proceso de despedir a un empleado',
       'La compra de software de gestión',
     ], 1),
-    q(31, 'Gestión del Conocimiento', 'Ana escribe en una plantilla de 5 pasos con capturas cómo arreglar el error de facturación. ¿Qué etapa del ciclo es?', [
-      'Crear',
-      'Organizar',
-      'Capturar',
-      'Aplicar',
-    ], 2),
-    q(32, 'Gestión del Conocimiento', 'Luis escribe «error facturación» en el buscador interno y encuentra la guía de Ana. ¿Qué etapa es?', [
-      'Compartir',
-      'Crear',
-      'Actualizar',
-      'Capturar',
-    ], 0),
-    q(33, 'Gestión del Conocimiento', '¿Qué mide el indicador de onboarding?', [
-      'Cuántas veces se usa una guía',
-      'Qué parte de la información está vigente',
-      'Cuánto tardan en hallar una respuesta',
-      'Los días que tarda alguien nuevo en trabajar solo',
-    ], 3),
     q(34, 'Gestión del Conocimiento', '¿Cuál es un error común en la gestión del conocimiento?', [
       'Asignar un responsable a cada guía',
       'Escribir una guía y nunca actualizarla',
       'Usar los mismos formatos y nombres',
       'Reconocer a quien comparte su saber',
     ], 1),
-    q(35, 'Gestión del Conocimiento', '¿Cuál de estos programas se usa para gestión del conocimiento?', [
-      'Salesforce',
-      'Kinaxis',
-      'Confluence',
-      'Blue Yonder',
-    ], 2),
 
     // ── Comparación ──
     q(36, 'Comparación', '¿Cuál es el foco de cada enfoque?', [
@@ -272,18 +212,6 @@
       'CRM: la relación con el cliente; SCM: el flujo del producto; KM: el saber del equipo',
       'Los tres tienen exactamente el mismo foco',
     ], 2),
-    q(37, 'Comparación', '¿Qué programa aparece en la lista tanto de CRM como de SCM?', [
-      'Odoo',
-      'Notion',
-      'SharePoint',
-      'Salesforce',
-    ], 0),
-    q(38, 'Comparación', 'Los indicadores CAC, conversión, LTV, churn y NPS pertenecen a:', [
-      'SCM',
-      'CRM',
-      'Gestión del conocimiento',
-      'Ninguno de los tres',
-    ], 1),
   ];
 
   // Registro idempotente de materia

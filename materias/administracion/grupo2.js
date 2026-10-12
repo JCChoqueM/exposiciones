@@ -13,7 +13,7 @@
     label: 'Administración de Sistemas de Información',
     badge: 'ASI · INGENIERÍA DE SISTEMAS',
     subtitle: 'Examen Interactivo — Administración de Sistemas de la Información (UNIOR)',
-    temas: ['TODOS', 'GRUPO 1', 'GRUPO 2', 'GRUPO 3'],
+    temas: null, // sin filtro por tema: los grupos ya son pestañas de examen
     temaLabels: {
       'GRUPO 1': 'GRUPO 1: CRM, SCM y KM',
       'GRUPO 2': 'GRUPO 2: Estrategia, Decisiones, Calidad y Ética',
@@ -86,24 +86,12 @@
       'Factoría',
       'Vuelco (transición)',
     ], 1),
-    q(7, 'Estrategia y SI', 'Un proyecto piloto de una nueva tecnología, con bajo impacto actual pero alto impacto futuro, corresponde al rol de:', [
-      'Vuelco (transición)',
-      'Soporte',
-      'Factoría',
-      'Estratégico',
-    ], 0),
     q(8, 'Estrategia y SI', '¿Para qué se usa el marco ITIL 4?', [
       'Para el gobierno corporativo de TI',
       'Para medir la madurez del desarrollo de software',
       'Para la gestión de servicios de TI',
       'Para la seguridad de la información',
     ], 2),
-    q(9, 'Estrategia y SI', '¿Cuál es un error frecuente en la transformación digital?', [
-      'Usar la nube',
-      'Digitalizar un proceso malo sin rediseñarlo',
-      'Cambiar la cultura de la organización',
-      'Usar analítica de datos',
-    ], 1),
 
     // ── Decisiones y SI ──
     q(10, 'Decisiones y SI', 'Las decisiones a largo plazo, poco estructuradas y tomadas por la alta dirección corresponden al nivel:', [
@@ -112,12 +100,6 @@
       'Estratégico',
       'Técnico',
     ], 2),
-    q(11, 'Decisiones y SI', '¿Cuál es un ejemplo de decisión estructurada?', [
-      'Calcular un sueldo',
-      'Entrar a un mercado desconocido',
-      'Fijar el precio de un producto nuevo',
-      'Decidir abrir una sucursal',
-    ], 0),
     q(12, 'Decisiones y SI', 'Entrar a un mercado desconocido es una decisión:', [
       'Estructurada',
       'Programada',
@@ -130,12 +112,6 @@
       'Inteligencia → Elección → Diseño → Implementación',
       'Elección → Diseño → Inteligencia → Implementación',
     ], 1),
-    q(14, 'Decisiones y SI', 'En la etapa de «Diseño» del proceso de decisión se:', [
-      'Detecta y entiende el problema',
-      'Selecciona la mejor alternativa',
-      'Generan alternativas de solución',
-      'Hace seguimiento de la decisión',
-    ], 2),
     q(15, 'Decisiones y SI', '¿Qué sistemas registran las operaciones diarias (ventas, compras, pagos) y apoyan el nivel operativo?', [
       'TPS (procesamiento de transacciones)',
       'DSS (apoyo a la decisión)',
@@ -148,24 +124,12 @@
       'ERP',
       'DSS',
     ], 3),
-    q(17, 'Decisiones y SI', '¿Qué sistemas ofrecen tableros de control con indicadores clave para la alta dirección?', [
-      'TPS',
-      'EIS / ESS',
-      'MIS',
-      'CRM',
-    ], 1),
     q(18, 'Decisiones y SI', '¿Qué ocurrió con la herramienta de selección de personal con IA de Amazon (2018)?', [
       'Fue premiada por su precisión',
       'Se vendió a otras empresas',
       'Se abandonó porque penalizaba a las mujeres al haber aprendido de contrataciones pasadas mayoritariamente masculinas',
       'Fue prohibida por una ley',
     ], 2),
-    q(19, 'Decisiones y SI', 'La frase «basura entra, basura sale» se refiere a que:', [
-      'Datos incorrectos o desactualizados llevan a decisiones erradas',
-      'Hay que borrar los datos viejos cada mes',
-      'Los sistemas viejos deben reemplazarse',
-      'El exceso de información es siempre útil',
-    ], 0),
 
     // ── Calidad de la informática ──
     q(20, 'Calidad de la informática', 'Un mismo cliente registrado dos veces vulnera la dimensión de calidad de datos llamada:', [
@@ -174,30 +138,12 @@
       'Oportunidad',
       'Validez',
     ], 1),
-    q(21, 'Calidad de la informática', 'Un dato que cumple el formato y las reglas definidas (por ejemplo, una fecha con formato correcto) cumple la dimensión de:', [
-      'Completitud',
-      'Consistencia',
-      'Unicidad',
-      'Validez',
-    ], 3),
-    q(22, 'Calidad de la informática', 'Según Wang y Strong (1996), un dato es de calidad cuando:', [
-      'No tiene ningún error de ortografía',
-      'Está almacenado en la nube',
-      'Sirve para la tarea de su usuario',
-      'Fue ingresado por el gerente',
-    ], 2),
     q(23, 'Calidad de la informática', '¿Qué característica agregó la versión 2023 de la norma ISO/IEC 25010 (la versión de 2011 tenía ocho)?', [
       'Protección (safety)',
       'Seguridad',
       'Mantenibilidad',
       'Compatibilidad',
     ], 0),
-    q(24, 'Calidad de la informática', 'En la ISO/IEC 25010:2023, la antes llamada «usabilidad» pasó a llamarse:', [
-      'Flexibilidad',
-      'Fiabilidad',
-      'Adecuación funcional',
-      'Capacidad de interacción',
-    ], 3),
     q(25, 'Calidad de la informática', '¿Qué caso real muestra el costo de fallar en fiabilidad según el trabajo?', [
       'El caso Cambridge Analytica',
       'La caída global por una actualización defectuosa de CrowdStrike (19 de julio de 2024)',
@@ -260,30 +206,12 @@
       'Registro en el SIAT',
       'Cifrado obligatorio de todos los datos',
     ], 1),
-    q(35, 'Ética en los SI', '¿Qué permite la Acción de Protección de Privacidad de la Constitución boliviana (arts. 130 y 131)?', [
-      'Cobrar multas a las empresas',
-      'Bloquear sitios web',
-      'Conocer, rectificar o eliminar datos personales',
-      'Obtener una licencia de software',
-    ], 2),
     q(36, 'Ética en los SI', '¿Qué afirma el trabajo sobre la relación entre lo legal y lo ético?', [
       'Una conducta puede ser legal y aun así poco ética',
       'Todo lo legal es ético',
       'Todo lo ético es obligatorio por ley',
       'No hay relación alguna',
     ], 0),
-    q(37, 'Ética en los SI', 'Según la relación entre los cuatro componentes, ¿qué ocurre con una buena calidad sin ética?', [
-      'Produce decisiones erradas',
-      'Puede dañar a las personas',
-      'Queda en buenas intenciones',
-      'Garantiza la confianza del cliente',
-    ], 1),
-    q(38, 'Ética en los SI', '¿Cuál NO es un principio común de los códigos de ética profesional (ACM / IEEE) mencionados?', [
-      'No causar daño',
-      'Respetar la privacidad',
-      'Ser honesto',
-      'Priorizar siempre la ganancia de la empresa',
-    ], 3),
   ];
 
   // Registro idempotente de materia

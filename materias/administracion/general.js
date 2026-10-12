@@ -15,7 +15,7 @@
     label: 'Administración de Sistemas de Información',
     badge: 'ASI · INGENIERÍA DE SISTEMAS',
     subtitle: 'Examen Interactivo — Administración de Sistemas de la Información (UNIOR)',
-    temas: ['TODOS', 'GRUPO 1', 'GRUPO 2', 'GRUPO 3'],
+    temas: null, // sin filtro por tema: los grupos ya son pestañas de examen
     temaLabels: {
       'GRUPO 1': 'GRUPO 1: CRM, SCM y KM',
       'GRUPO 2': 'GRUPO 2: Estrategia, Decisiones, Calidad y Ética',
