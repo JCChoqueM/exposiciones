@@ -237,17 +237,31 @@
          `if (!SUBJECTS.<key>)`. Por último logic.js (init sincrónico).
          Orden: data.js primero; un <script> por examen agrupado por materia;
          logic.js al final. IMPORTANTE: si un examen reutiliza las preguntas de
-         otros de la misma materia (p. ej. 'general' junta 'grupo1/2/3'), esos
-         archivos deben cargarse ANTES que él. Para añadir un examen: crear el
-         .js y agregar su <script> aquí respetando las dependencias. -->
+         otros de la misma materia (p. ej. 'general' junta 'grupo1/2/3', o
+         'guias_general' junta 'guia1/2/3'), esos archivos deben cargarse
+         ANTES que él. Para añadir un examen: crear el .js y agregar su
+         <script> aquí respetando las dependencias.
+         Las materias explican en `group` a cuál pestaña de la barra de
+         exámenes pertenecen (ver buildExamBar en logic.js). -->
     <script src="data.js"></script>
     <!-- ASI — Administración de Sistemas de Información.
          grupo1.js define la materia (registro idempotente); general.js reutiliza
-         las preguntas de grupo1/2/3, por lo que DEBE cargarse DESPUÉS de ellos. -->
+         las preguntas de grupo1/2/3, por lo que DEBE cargarse DESPUÉS de ellos.
+         ensayo.js registra el examen 'ensayo' (texto para leer), cargándose
+         después de grupo1.js (que ya define la materia). -->
     <script src="materias/administracion/grupo1.js"></script>
     <script src="materias/administracion/grupo2.js"></script>
     <script src="materias/administracion/grupo3.js"></script>
     <script src="materias/administracion/general.js"></script>
+    <script src="materias/administracion/ensayo.js"></script>
+    <!-- Guías de estudio (ASI) — registran los exámenes guia1/2/3 + guias_general.
+         Reutilizan la materia 'asi' (ya definida por grupo1.js) y agregan sus
+         secciones/temas. guias_general reúne las preguntas de guia1+2+3, por
+         lo que DEBE cargarse DESPUÉS de los tres. -->
+    <script src="materias/Guia/guia1.js"></script>
+    <script src="materias/Guia/guia2.js"></script>
+    <script src="materias/Guia/guia3.js"></script>
+    <script src="materias/Guia/guias_general.js"></script>
     <script src="logic.js"></script>
   </body>
 </html>

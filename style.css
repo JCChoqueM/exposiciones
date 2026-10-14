@@ -219,10 +219,43 @@
       /* ─── EXAMEN SELECTOR ─── */
       .exam-bar {
         display: flex;
-        justify-content: center;
-        gap: 10px;
-        padding: 6px 24px 14px;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 24px 14px;
         flex-wrap: wrap;
+      }
+      /* Pestañas de carpetas/grupos (administracion vs guia) */
+      .exam-tabs {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .exam-tab {
+        font-family: 'Syne', sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 9px 22px;
+        border-radius: 12px 12px 0 0;
+        border: 1.5px solid var(--border);
+        border-bottom: none;
+        background: var(--bg2);
+        color: var(--text-soft);
+        cursor: pointer;
+        transition: all 0.2s;
+        letter-spacing: 0.02em;
+      }
+      .exam-tab:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+      .exam-tab.active {
+        background: var(--bg);
+        border-color: var(--border);
+        border-bottom: 2px solid var(--bg);
+        color: var(--text);
+        font-weight: 800;
       }
       .exam-btn {
         font-family: 'Syne', sans-serif;
@@ -790,6 +823,11 @@
 [data-exam='grupo2']  { --gc: #f59e0b; --gc-ink: #231500; }    /* ámbar   */
 [data-exam='grupo3']  { --gc: #48ec87; }                       /* rosa    */
 [data-exam='general'] { --gc: #8b5cf6; }                       /* violeta */
+[data-exam='ensayo']  { --gc: #eab308; --gc-ink: #301e00; }    /* oro     */
+[data-exam='guia1']         { --gc: #06b6d4; }                       /* cian       */
+[data-exam='guia2']         { --gc: #f97316; --gc-ink: #220a00; }    /* naranja    */
+[data-exam='guia3']         { --gc: #84cc16; }                       /* lima       */
+[data-exam='guias_general'] { --gc: #ec4899; --gc-ink: #2e001e; }    /* fucsia     */
 
 /* Pestañas de examen: cada una con su color; la activa va rellena, elevada y con ✓ */
 .exam-btn {
@@ -917,3 +955,75 @@ body[data-exam] .stats-bar {
 .stat-mode[data-mode='exam'] .stat-num { color: var(--warn); }
 .stat-mode[data-mode='review'] { border-color: #a78bfa; }
 .stat-mode[data-mode='review'] .stat-num { color: #a78bfa; }
+
+/* ─── ENSAYO / TEXTOS DE LECTURA ─── */
+.essay-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 20px 20px 80px;
+}
+.essay-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.essay-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+.essay-meta {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+
+.essay-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.essay-paragraph {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15.5px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: var(--text);
+  text-align: justify;
+  hyphens: auto;
+}
+
+.essay-refs {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.essay-refs-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-soft);
+  margin-bottom: 12px;
+}
+.essay-refs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.essay-refs-list li {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.6;
+  color: var(--text-muted);
+  padding-left: 0;
+}

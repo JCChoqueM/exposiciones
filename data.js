@@ -14,6 +14,7 @@ let currentExam = null;      // examen activo dentro de la materia (clave) — l
 let mode = 'practice';
 let activeTema = 'TODOS';
 let activeSeccion = 'TODAS';
+let activeExamGroup = 'administracion'; // pestaña de exámenes activa (ver buildExamBar en logic.js)
 let userAnswers = {};
 let examSubmitted = false;
 let currentQuestions = [];
@@ -22,8 +23,9 @@ let isInitialLoad = true;
 // ── EXAMEN POR DEFECTO AL CARGAR LA PÁGINA ──
 // Cambia este valor por la 'exam_key' del examen que quieras que se abra
 // automáticamente al entrar a la app (debe existir en SUBJECTS[currentSubject].exams).
-// Ejemplo: 'parcial2', 'parcial3', 'general', etc.
-const DEFAULT_EXAM = 'general';
+// Ejemplo: 'parcial2', 'parcial3', 'general', 'guias_general', etc.
+// 'guias_general' reúne las preguntas de las guías de estudio (Guía).
+const DEFAULT_EXAM = 'guias_general';
 
 // logic.js llama a selectSubject(currentSubject) en su bloque de Init, lo que
 // resetea currentExam a null (es su comportamiento normal al cambiar de materia).

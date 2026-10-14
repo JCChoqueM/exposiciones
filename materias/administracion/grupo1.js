@@ -233,6 +233,7 @@
   SUBJECTS[CONFIG.subject_key].exams[CONFIG.exam_key] = {
     key: CONFIG.exam_key,
     label: CONFIG.exam_label,
+    group: 'administracion',
     questions: ASI_GRUPO1_QUESTIONS,
   };
 })();

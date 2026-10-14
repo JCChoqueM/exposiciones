@@ -24,6 +24,36 @@
           .join('');
       }
 
+      // Etiquetas de las pestañas (group). Extensible: cualquier group no
+      // listado aquí se muestra con su propio key.
+      const EXAM_GROUP_LABELS = {
+        administracion: '📚 Exámenes',
+        guia: '📖 Guías',
+      };
+
+      function selectExamGroup(group) {
+        activeExamGroup = group;
+        const subj = SUBJECTS[currentSubject];
+        const belongsHere =
+          currentExam && subj && subj.exams[currentExam] &&
+          (subj.exams[currentExam].group || 'administracion') === group;
+        if (!belongsHere) {
+          // El examen activo (si lo hay) no está en esta pestaña: se muestra el
+          // estado vacío hasta que se seleccione uno de esta pestaña. Las
+          // respuestas se conservan en memoria (se reinician al elegir examen).
+          currentExam = null;
+          document.body.removeAttribute('data-exam');
+          activeTema = 'TODOS';
+          activeSeccion = 'TODAS';
+          currentQuestions = [];
+          examSubmitted = false;
+        }
+        buildExamBar();
+        document.getElementById('tema-filter').style.display = 'none';
+        document.getElementById('seccion-filter').style.display = 'none';
+        renderQuestions();
+      }
+
       function buildExamBar() {
         const wrap = document.getElementById('exam-bar');
         const subject = SUBJECTS[currentSubject];
@@ -34,7 +64,33 @@
           return;
         }
         wrap.style.display = 'flex';
-        wrap.innerHTML = exams
+
+        // Orden de grupos respetando el orden de registro de los exámenes
+        const order = [];
+        exams.forEach((e) => {
+          const g = e.group || 'administracion';
+          if (!order.includes(g)) order.push(g);
+        });
+        let activeGroup = activeExamGroup || order[0];
+        if (!order.includes(activeGroup)) activeGroup = order[0];
+        activeExamGroup = activeGroup;
+
+        // Pestañas (una por carpeta/grupo)
+        let html =
+          '<div class="exam-tabs">' +
+          order
+            .map(
+              (g) =>
+                `<button class="exam-tab ${g === activeGroup ? 'active' : ''}" onclick="selectExamGroup('${g}')">${EXAM_GROUP_LABELS[g] || g}</button>`,
+            )
+            .join('') +
+          '</div>';
+
+        // Botones de exámenes solo de la pestaña activa
+        const grupoExams = exams.filter(
+          (e) => (e.group || 'administracion') === activeGroup,
+        );
+        html += grupoExams
           .map(
             (e) =>
               `<button class="exam-btn ${e.key === currentExam ? 'active' : ''}" data-exam="${e.key}" onclick="selectExam('${e.key}')">
@@ -42,6 +98,8 @@
               </button>`,
           )
           .join('');
+
+        wrap.innerHTML = html;
       }
 
       function selectSubject(key) {
@@ -49,6 +107,7 @@
         currentSubject = key;
         currentExam = null;          // sin examen activo: se pide elegir uno
         document.body.removeAttribute('data-exam');
+        activeExamGroup = '';        // se recalcula en buildExamBar (primer grupo)
         activeTema = 'TODOS';
         activeSeccion = 'TODAS';
         userAnswers = {};
@@ -72,6 +131,9 @@
         // Los filtros de tema/sección solo tienen sentido con un examen activo
         document.getElementById('tema-filter').style.display = 'none';
         document.getElementById('seccion-filter').style.display = 'none';
+        // Restaurar UI que toggleEssayUI pudo haber ocultado (p. ej. al volver
+        // del modo ensayo). Al no haber examen activo, nada está oculto.
+        toggleEssayUI();
         renderQuestions();          // empty-state: "elige un examen"
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -82,6 +144,7 @@
         currentExam = key;
         document.body.setAttribute('data-exam', key);
         const exam = subject.exams[key];
+        activeExamGroup = exam.group || 'administracion'; // pestaña del examen elegido
         activeTema = 'TODOS';
         activeSeccion = 'TODAS';
         userAnswers = {};
@@ -96,6 +159,7 @@
         buildExamBar();
         buildTemaFilter();
         buildSeccionFilter();
+        toggleEssayUI();
         renderQuestions();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -117,6 +181,7 @@
       }
 
       function setMode(m) {
+        if (isEssayExam()) return;
         mode = m;
         examSubmitted = false;
         userAnswers = {};
@@ -209,6 +274,7 @@
       }
 
       function shuffleQuestions() {
+        if (isEssayExam()) return;
         currentQuestions = [...currentQuestions].sort(() => Math.random() - 0.5);
         userAnswers = {};
         examSubmitted = false;
@@ -238,8 +304,71 @@
         return qs;
       }
 
+      // ── Essay (ensayo) support ──
+      // Un examen puede no tener preguntas sino un texto de lectura
+      // (campo `essay`). En ese caso se muestra el texto en lugar de preguntas.
+      function isEssayExam() {
+        const ex = activeExam();
+        return ex && ex.essay;
+      }
+
+      function renderEssay(essay) {
+        const wrap = document.getElementById('questions-wrap');
+        const paragraphs = essay.paragraphs || [];
+        const refs = essay.refs || [];
+
+        wrap.innerHTML =
+          '<div class="essay-wrap">' +
+          (essay.title
+            ? '<div class="essay-header">' +
+              '<h2 class="essay-title">' + essay.title + '</h2>' +
+              (essay.meta ? '<div class="essay-meta">' + essay.meta + '</div>' : '') +
+              '</div>'
+            : '') +
+          '<div class="essay-body">' +
+          paragraphs.map(function (p) {
+            return '<p class="essay-paragraph">' + p + '</p>';
+          }).join('') +
+          '</div>' +
+          (refs.length
+            ? '<div class="essay-refs"><h3 class="essay-refs-title">Referencias</h3><ul class="essay-refs-list">' +
+              refs.map(function (r) {
+                return '<li>' + r + '</li>';
+              }).join('') +
+              '</ul></div>'
+            : '') +
+          '</div>';
+      }
+
+      // Muestra/oculta la UI que no tiene sentido en modo ensayo
+      // (barra de modos, estadísticas, acciones y filtro de secciones).
+      function toggleEssayUI() {
+        const essayMode = !!isEssayExam();
+        const modeBar = document.querySelector('.mode-bar');
+        const statsBar = document.querySelector('.stats-bar');
+        const actions = document.querySelector('.actions');
+        const seccionFilter = document.getElementById('seccion-filter');
+
+        if (modeBar) modeBar.style.display = essayMode ? 'none' : 'flex';
+        if (statsBar) statsBar.style.display = essayMode ? 'none' : 'flex';
+        if (actions) actions.style.display = essayMode ? 'none' : 'flex';
+        if (seccionFilter) {
+          seccionFilter.style.display = essayMode || !SUBJECTS[currentSubject] || !SUBJECTS[currentSubject].secciones
+            ? 'none'
+            : 'flex';
+        }
+      }
+
       function renderQuestions() {
         const wrap = document.getElementById('questions-wrap');
+
+        // Essay mode: render the reading text instead of questions
+        const ex = activeExam();
+        if (ex && ex.essay) {
+          renderEssay(ex.essay);
+          return;
+        }
+
         const qs = getVisibleQuestions();
 
         document.getElementById('stat-total').textContent = qs.length;
@@ -349,6 +478,7 @@
       }
 
       function submitExam() {
+        if (isEssayExam()) return;
         const qs = getVisibleQuestions();
         if (qs.length === 0) return;            // no hay examen/preguntas visibles
         examSubmitted = true;

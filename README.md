@@ -4,7 +4,7 @@ Plataforma web de **examen interactivo** para materias universitarias (modo Prá
 
 > 📐 **Arquitectura:** cada materia vive en su **propia subcarpeta** dentro de `materias/`. Cada examen es un **archivo `.js` auto-contenido**: integra los metadatos de la materia (el antiguo `meta.js`) y las preguntas, y se autoregistra en `SUBJECTS`. En `index.html` hay **un `<script>` estático por examen** (sección sincrónica, por lo que abre sin problemas con `file://`, sin servidor ni comandos extra). Para añadir un examen: **crear el `.js` y agregar su `<script>` a `index.html`** — punto. No modificás `data.js` ni `logic.js`, ni corrés comandos.
 >
-> 📦 Estado actual: el proyecto incluye las materias **`ia`**, **`redes`** y **`asi`** (Administración de Sistemas de Información). La página (`index.html`) carga actualmente **solo `asi`**; `ia` y `redes` están disponibles en `materias/` y se pueden volver a habilitar agregando sus `<script>`. Podés agregar tantas como necesites siguiendo la plantilla de abajo.
+> 📦 Estado actual: el proyecto incluye la materia **`asi`** (Administración de Sistemas de Información), en dos subcarpetas dentro de `materias/`: `administracion/` (exámenes por grupos + general + ensayo) y `Guia/` (guías de estudio + `guias_general`). La página (`index.html`) carga **todas** las guías de estudio (`guia1`/`guia2`/`guia3`/`guias_general`), que se registro en la barra de exámenes junto a los grupos. Para volver a habilitar otras materias: creá su carpeta, seguí la plantilla de abajo y agregá su `<script>` en `index.html`.
 
 ## Estructura del proyecto
 
@@ -15,18 +15,17 @@ examen/
 ├── data.js              # Inicializa SUBJECTS = {} + estado global (no se toca)
 ├── logic.js             # Lógica genérica: barra de materias, selector, filtros, renderizado (no se toca)
 └── materias/            # ← aquí van las materias (subcarpeta = clave de la materia)
-    ├── ia/
-    │   ├── parcial1.js  # auto-contenido: define materia + SUBJECTS.ia.exams.parcial1
-    │   └── parcial2.js
-    ├── redes/
-    │   ├── general.js
-    │   ├── parcial2.js
-    │   └── parcial3.js
-    └── asi/  (Administración de Sistemas de Información)
-        ├── grupo1.js  # CRM, SCM y KM
-        ├── grupo2.js  # Estrategia, Decisiones, Calidad y Ética
-        ├── grupo3.js  # Infraestructura, Software, Datos, Redes y Seguridad
-        └── general.js # "Todo en uno": junta las preguntas de grupo1/2/3 (carga DESPUÉS de ellos)
+    ├── administracion/  # ASI — Administración de Sistemas de Información
+    │   ├── grupo1.js    # CRM, SCM y KM  — DEFINE la materia (registro idempotente)
+    │   ├── grupo2.js    # Estrategia, Decisiones, Calidad y Ética
+    │   ├── grupo3.js    # Infraestructura, Software, Datos, Redes y Seguridad
+    │   ├── general.js   # "Todo en uno": junta grupo1/2/3 (carga DESPUÉS de ellos)
+    │   └── ensayo.js    # Texto de lectura (campo `essay`)
+    └── Guia/            # Guías de estudio de ASI (misma materia, exámenes extra)
+        ├── guia1.js     # Guía 1 — ERP, CRM, SCM y Gestión del Conocimiento
+        ├── guia2.js     # Guía 2 — Estrategia, Decisiones, Calidad y Ética
+        ├── guia3.js     # Guía 3 — Infraestructura, Software, Datos, Redes y Seguridad
+        └── guias_general.js  # "Todo en uno" de las guías: junta guia1+2+3 (carga DESPUÉS)
 ```
 
 ### ¿Cómo funciona?
@@ -42,23 +41,33 @@ examen/
 <!-- 1) estado: SUBJECTS vacío -->
 <script src="data.js"></script>
 <!-- 2) exámenes (uno por archivo; el 1er examen de cada materia define la materia) -->
-<!-- ASI — grupo1 define la materia; general reúne grupo1/2/3 → va al final -->
+<!-- ASI — grupo1.js define la materia (registro idempotente); general.js reúne
+     grupo1/2/3 → va al final. ensayo.js agrega su examen (texto de lectura). -->
 <script src="materias/administracion/grupo1.js"></script>
 <script src="materias/administracion/grupo2.js"></script>
 <script src="materias/administracion/grupo3.js"></script>
 <script src="materias/administracion/general.js"></script>
+<script src="materias/administracion/ensayo.js"></script>
+<!-- Guías de estudio de ASI (misma materia 'asi'; reutilizan lo ya definido por
+     grupo1.js y agregan secciones/temas). guias_general.js junta guia1+2+3 →
+     carga DESPUÉS de los tres. -->
+<script src="materias/Guia/guia1.js"></script>
+<script src="materias/Guia/guia2.js"></script>
+<script src="materias/Guia/guia3.js"></script>
+<script src="materias/Guia/guias_general.js"></script>
 <!-- 3) UI -->
 <script src="logic.js"></script>
 ```
 
-> ℹ️ La página carga actualmente **solo** la materia `asi` (Administración). Los archivos
-> de `ia` y `redes` siguen presentes en `materias/`; si los querés de nuevo, agregá sus
-> `<script>` en este bloque (respetando el orden de dependencias de cada materia) y
-> volvé a `data.js` ajustando `currentSubject`.
+> ℹ️ La página carga la materia `asi` (Administración), incluyendo **todas** las
+> guías de estudio (`guia1`/`guia2`/`guia3`/`guias_general`). Para habilitar otras
+> materias: creá su subcarpeta en `materias/`, agregá sus `<script>` en este bloque
+> (respetando el orden de dependencias) y ajustá `currentSubject` en `data.js`.
 
-> ⚠️ Si un examen reúne preguntas de otros de la misma materia (como `asi/general`), los
-> archivos que proveen las preguntas deben cargarse **antes** que él. El orden alfabético
-> es una guía, no un requisito estricto cuando hay dependencias entre exámenes.
+> ⚠️ Si un examen reúne preguntas de otros de la misma materia (como `asi/general`
+> o `asi/guias_general`), los archivos que proveen las preguntas deben cargarse
+> **antes** que él. El orden alfabético es una guía, no un requisito estricto cuando
+> hay dependencias entre exámenes.
 
 ## Cómo añadir una nueva materia
 
@@ -106,6 +115,8 @@ Un solo archivo con las preguntas **+** el metadato de la materia (registro idem
   SUBJECTS.<materia>.exams.<examen> = {
     key: '<examen>',
     label: "<Examen>",
+    group: '<grupo>',            // opcional: pestaña de la barra ('administracion', 'guia', …).
+                                 // Si no se pone, se asume 'administracion'.
     questions: <PREFIJO>_<EXAM>_QUESTIONS,
   };
 })();
@@ -122,9 +133,12 @@ Un solo archivo con las preguntas **+** el metadato de la materia (registro idem
 | `opts` | **Exactamente 4** strings. |
 | `answer` | Índice entero `0..3`. |
 | `id` | Único a nivel global. |
+| `group` | Opcional. Pestaña de la barra de exámenes a la que pertenece (ej. `'administracion'`, `'guia'`). Si no se indica, se agrupa en `'administracion'`. |
 | IIFE | Envuelve todo el cuerpo: constantes locales → podés copiar/reusar sin colisiones. |
 
 > 💡 Si la materia **no** usa filtros por sección, pon `secciones: null` (en cuyo caso el selector de secciones se oculta).
+
+> 📂 **Pestañas por carpeta:** en `asi` los exámenes de `materias/administracion/` llevan `group: 'administracion'` (pestaña **📚 Exámenes**) y los de `materias/Guia/` llevan `group: 'guia'` (pestaña **📖 Guías**). La barra de exámenes (`logic.js`, `buildExamBar`) genera una pestaña por `group`, conservando el orden de registro; `selectExamGroup(group)` cambia de pestaña y `selectExam(key)` activa la pestaña del examen elegido.
 
 #### Paso 2 — Agregar su `<script>` a `index.html`
 
